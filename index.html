@@ -961,19 +961,19 @@
 
         <div class="gallery-grid reveal">
           <div class="gallery-item" data-label="Comfortable spa environment">
-            <img src="1.jpg" alt="Shop photo 1" loading="lazy">
+            <img src="1.jpg" data-local-src="1.jpg" alt="Shop photo 1" loading="lazy">
           </div>
           <div class="gallery-item" data-label="Quiet treatment area">
-            <img src="2.jpg" alt="Shop photo 2" loading="lazy">
+            <img src="2.jpg" data-local-src="2.jpg" alt="Shop photo 2" loading="lazy">
           </div>
           <div class="gallery-item" data-label="Relaxing interior details">
-            <img src="3.jpg" alt="Shop photo 3" loading="lazy">
+            <img src="3.jpg" data-local-src="3.jpg" alt="Shop photo 3" loading="lazy">
           </div>
           <div class="gallery-item" data-label="Clean and private space">
-            <img src="4.jpg" alt="Shop photo 4" loading="lazy">
+            <img src="4.jpg" data-local-src="4.jpg" alt="Shop photo 4" loading="lazy">
           </div>
           <div class="gallery-item" data-label="Welcoming wellness setting">
-            <img src="5.jpg" alt="Shop photo 5" loading="lazy">
+            <img src="5.jpg" data-local-src="5.jpg" alt="Shop photo 5" loading="lazy">
           </div>
         </div>
       </div>
@@ -1138,6 +1138,16 @@
       </svg>
     `);
 
+    function assetPath(file) {
+      const cleanFile = file.replace(/^\.\//, "").replace(/^\//, "");
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      const isGithubPagesDefaultDomain = window.location.hostname.endsWith(".github.io");
+      const basePath = isGithubPagesDefaultDomain && pathParts.length > 0
+        ? `/${pathParts[0]}/`
+        : "/";
+      return `${basePath}${cleanFile}`;
+    }
+
     const images = {
       foot: [
         "https://i.pinimg.com/1200x/6a/df/fe/6adffe5706bdce88dd2d2d0fc6875398.jpg",
@@ -1195,11 +1205,11 @@
         "https://i.pinimg.com/736x/bb/e8/0a/bbe80a45c6f75495c5eaff700ac1f8fc.jpg"
       ],
       room: [
-        "1.jpg",
-        "2.jpg",
-        "3.jpg",
-        "4.jpg",
-        "5.jpg"
+        assetPath("1.jpg"),
+        assetPath("2.jpg"),
+        assetPath("3.jpg"),
+        assetPath("4.jpg"),
+        assetPath("5.jpg")
       ]
     };
 
@@ -1386,6 +1396,10 @@
     const heroBg = document.getElementById("heroBg");
     const heroSlides = [images.room[0], images.headSpa[0], images.foot[0], images.facial[0]];
     let heroIndex = 0;
+
+    document.querySelectorAll("img[data-local-src]").forEach(img => {
+      img.src = assetPath(img.dataset.localSrc);
+    });
 
     heroBg.style.backgroundImage = `url("${heroSlides[0]}")`;
     document.getElementById("aboutPhoto").style.backgroundImage =
